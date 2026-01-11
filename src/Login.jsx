@@ -31,15 +31,20 @@ export default function Login() {
     setLoading(true)
 
     if (isSignUp) {
-      // --- SIGN UP ---
+      // --- SIGN UP LOGIC ---
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+            // This ensures the user comes back to the dashboard after clicking the link
+            emailRedirectTo: window.location.origin + '/dashboard'
+        }
       })
 
       if (error) {
         alert(error.message)
       } else {
+        // 1. Save Admin Profile
         if (data?.user) {
             const { error: profileError } = await supabase.from('admins').insert([
                 {
@@ -50,18 +55,31 @@ export default function Login() {
             ])
             if (profileError) console.error(profileError)
         }
-        alert('Account created! Logging you in...')
-        navigate('/dashboard')
+
+        // 2. Check if Email Confirmation is required
+        if (data.user && !data.session) {
+            alert('Registration Successful! ✉️ Please check your email to verify your account before logging in.')
+            setIsSignUp(false) // Switch back to login view
+        } else {
+            // If confirmation is OFF in Supabase, just log in
+            alert('Account created! Logging you in...')
+            navigate('/dashboard')
+        }
       }
     } else {
-      // --- LOGIN ---
+      // --- LOGIN LOGIC ---
       const { error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
 
       if (error) {
-        alert(error.message)
+        // Specific error message for unverified emails
+        if (error.message.includes("Email not confirmed")) {
+            alert("Please verify your email address before logging in. Check your inbox.")
+        } else {
+            alert(error.message)
+        }
       } else {
         navigate('/dashboard')
       }

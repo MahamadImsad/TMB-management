@@ -122,7 +122,7 @@ export default function AddStudent() {
             <input name="mobile_1" required onChange={handleChange} className="border-b border-black w-full font-bold mt-4" placeholder="Mobile Number" />
 
             <div className="bg-yellow-50 border-2 border-yellow-400 p-4 mt-4 flex gap-4">
-                <div className="flex-1"><label className="text-xs font-bold">Total Fee (Editable)</label><input name="total_fee" type="number" value={formData.total_fee} onChange={handleChange} className="font-bold text-xl w-full p-1 border" /></div>
+                <div className="flex-1"><label className="text-xs font-bold">Total Fee </label><input name="total_fee" type="number" value={formData.total_fee} onChange={handleChange} className="font-bold text-xl w-full p-1 border" /></div>
                 <div className="flex-1"><label className="text-xs font-bold">Paid Now</label><input name="taken_fee" type="number" required onChange={handleChange} className="font-bold text-xl w-full border-b-2 border-green-500" /></div>
             </div>
 
